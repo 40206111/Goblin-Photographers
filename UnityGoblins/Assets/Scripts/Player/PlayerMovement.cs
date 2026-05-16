@@ -45,5 +45,10 @@ public class PlayerMovement : NetworkBehaviour
 
         _camera = Camera.main;
         _camera.GetComponent<FirstPersonCamera>().Target = transform;
+
+        //don't spawn inside each other
+        var xLoc = Random.Range(-10, 10);
+        var zLoc = Random.Range(-10, 10);
+        _controller.Move(new Vector3(xLoc, 0, zLoc));
     }
 }
