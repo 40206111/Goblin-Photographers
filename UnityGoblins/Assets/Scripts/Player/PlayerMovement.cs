@@ -6,8 +6,10 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : NetworkBehaviour
 {
     CharacterController _controller;
+    Camera _camera;
 
-    [SerializeField] float _playerSpeed;
+    [SerializeField] float _playerSpeed = 6f;
+    [SerializeField] Transform _head;
 
     private void Awake()
     {
@@ -21,7 +23,8 @@ public class PlayerMovement : NetworkBehaviour
         var moveAction = InputSystem.actions.FindAction("Move");
         var moveValue = moveAction.ReadValue<Vector2>();
 
-        Vector3 move = new Vector3(moveValue.x, 0, moveValue.y) * Runner.DeltaTime * _playerSpeed;
+        Quaternion cameraRotationY = Quaternion.Euler(0, _camera.transform.rotation.eulerAngles.y, 0);
+        Vector3 move = cameraRotationY * new Vector3(moveValue.x, 0, moveValue.y) * Runner.DeltaTime * _playerSpeed;
 
         _controller.Move(move);
 
@@ -29,5 +32,18 @@ public class PlayerMovement : NetworkBehaviour
         {
             gameObject.transform.forward = move;
         }
+
+        _head.forward = _camera.transform.forward;
+    }
+
+    public override void Spawned()
+    {
+        if (!HasStateAuthority) //only the client that made this player
+        {
+            return;
+        }
+
+        _camera = Camera.main;
+        _camera.GetComponent<FirstPersonCamera>().Target = transform;
     }
 }
