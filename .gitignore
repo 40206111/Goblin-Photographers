@@ -100,3 +100,5 @@ InitTestScene*.unity*
 UnityGoblins/Library
 UnityGoblins/UserSettings
 UnityGoblins/Temp
+UnityGoblins/Logs
+UnityGoblins/obj
